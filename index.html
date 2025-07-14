@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant LDL Survival Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460, #e94560);
+            background-size: 300% 300%;
+            animation: gradientShift 15s ease infinite;
+            z-index: -2;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            z-index: -1;
+        }
+        
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: #e94560;
+            top: -200px;
+            left: -200px;
+            animation: float1 20s infinite;
+        }
+        
+        .orb2 {
+            width: 300px;
+            height: 300px;
+            background: #0f3460;
+            bottom: -150px;
+            right: -150px;
+            animation: float2 25s infinite;
+        }
+        
+        .orb3 {
+            width: 250px;
+            height: 250px;
+            background: #16213e;
+            top: 50%;
+            left: 50%;
+            animation: float3 30s infinite;
+        }
+        
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(100px, 50px) scale(1.1); }
+        }
+        
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-80px, -60px) scale(0.9); }
+        }
+        
+        @keyframes float3 {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-45%, -55%) scale(1.2); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 1s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.5),
+                         0 0 80px rgba(233, 69, 96, 0.4),
+                         0 0 120px rgba(59, 130, 246, 0.3);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+        }
+        
+        /* Glass cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Grid layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Safe/Danger cards */
+        .safe-card {
+            border-top: 4px solid #10b981;
+            animation: pulseGreen 3s infinite;
+        }
+        
+        @keyframes pulseGreen {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+        }
+        
+        .danger-card {
+            border-top: 4px solid #ef4444;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header .icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        
+        .safe-card .card-header { color: #10b981; }
+        .danger-card .card-header { color: #ef4444; }
+        
+        /* List items */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .item-en {
+            font-weight: 600;
+        }
+        
+        .item-ro {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+        
+        /* Sushi section */
+        .sushi-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+            border-top: 4px solid #3b82f6;
+        }
+        
+        .sushi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .sushi-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .sushi-item:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sushi-item.safe {
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+        
+        .sushi-item.danger {
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+        
+        .sushi-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Flip cards for cuisines */
+        .cuisine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .cuisine-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cuisine-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cuisine-items {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .cuisine-safe { color: #10b981; }
+        .cuisine-danger { color: #ef4444; }
+        
+        /* Magic phrases */
+        .phrases-section {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+            border-top: 4px solid #fbbf24;
+        }
+        
+        .phrases-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .phrase-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .phrase-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .phrase-en {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .phrase-ro {
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+        }
+        
+        .flag {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            margin-top: 3rem;
+        }
+        
+        .golden-rule {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .main-grid { grid-template-columns: 1fr; }
+            .cuisine-grid { grid-template-columns: repeat(2, 1fr); }
+            .sushi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Restaurant LDL Survival Guide</h1>
+            <p class="subtitle">Your pocket guide to eating out while lowering cholesterol to <100 mg/dL</p>
+        </div>
+        
+        <div class="main-grid">
+            <div class="glass-card safe-card">
+                <div class="card-header">
+                    <span class="icon">✅</span>
+                    SAFE WORDS
+                </div>
+                <div class="item-list">
+                    <div class="item">
+                        <span class="item-en">Grilled</span>
+                        <span class="item-ro">La grătar</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Baked</span>
+                        <span class="item-ro">La cuptor</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Steamed</span>
+                        <span class="item-ro">La abur</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Poached</span>
+                        <span class="item-ro">Poșat</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Boiled</span>
+                        <span class="item-ro">Fiert</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-card danger-card">
+                <div class="card-header">
+                    <span class="icon">🚫</span>
+                    DANGER WORDS
+                </div>
+                <div class="item-list">
+                    <div class="item">
+                        <span class="item-en">Fried</span>
+                        <span class="item-ro">Prăjit</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Crispy</span>
+                        <span class="item-ro">Crocant</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Creamy</span>
+                        <span class="item-ro">Cu smântână</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Cheese</span>
+                        <span class="item-ro">Brânză</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-en">Butter</span>
+                        <span class="item-ro">Unt</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass-card sushi-section">
+            <div class="card-header" style="color: #3b82f6;">
+                <span class="icon">🍱</span>
+                SUSHI - Your Best Friend!
+            </div>
+            <div class="sushi-grid">
+                <div class="sushi-item safe">
+                    <div class="sushi-icon">✅</div>
+                    <div style="font-weight: 600;">Sashimi</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">Just fish!</div>
+                </div>
+                <div class="sushi-item safe">
+                    <div class="sushi-icon">✅</div>
+                    <div style="font-weight: 600;">Nigiri</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">Fish + rice</div>
+                </div>
+                <div class="sushi-item safe">
+                    <div class="sushi-icon">✅</div>
+                    <div style="font-weight: 600;">Soy Sauce</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">Soia OK!</div>
+                </div>
+                <div class="sushi-item safe">
+                    <div class="sushi-icon">✅</div>
+                    <div style="font-weight: 600;">Wasabi</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">All good</div>
+                </div>
+                <div class="sushi-item danger">
+                    <div class="sushi-icon">❌</div>
+                    <div style="font-weight: 600;">Tempura</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">Deep fried</div>
+                </div>
+                <div class="sushi-item danger">
+                    <div class="sushi-icon">❌</div>
+                    <div style="font-weight: 600;">Cream Cheese</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">In rolls</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 style="text-align: center; color: #fff; margin: 2rem 0;">
+            🔄 Hover/Tap Cards for Romanian Translation
+        </h2>
+        
+        <div class="cuisine-grid">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="cuisine-icon">🍝</div>
+                        <div class="cuisine-name">Italian</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Grilled fish</div>
+                            <div class="cuisine-safe">✓ Marinara sauce</div>
+                            <div class="cuisine-danger">✗ Most items</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="cuisine-icon">🍝</div>
+                        <div class="cuisine-name">Italian</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Pește la grătar</div>
+                            <div class="cuisine-safe">✓ Sos marinara</div>
+                            <div class="cuisine-danger">✗ Majoritatea</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="cuisine-icon">🥢</div>
+                        <div class="cuisine-name">Asian</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Steamed items</div>
+                            <div class="cuisine-safe">✓ Sushi</div>
+                            <div class="cuisine-danger">✗ Fried items</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="cuisine-icon">🥢</div>
+                        <div class="cuisine-name">Asiatic</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ La abur</div>
+                            <div class="cuisine-safe">✓ Sushi</div>
+                            <div class="cuisine-danger">✗ Prăjit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="cuisine-icon">🍖</div>
+                        <div class="cuisine-name">American</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Grilled chicken</div>
+                            <div class="cuisine-safe">✓ Side salad</div>
+                            <div class="cuisine-danger">✗ 90% of menu</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="cuisine-icon">🍖</div>
+                        <div class="cuisine-name">American</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Pui la grătar</div>
+                            <div class="cuisine-safe">✓ Salată simplă</div>
+                            <div class="cuisine-danger">✗ 90% din meniu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="cuisine-icon">🇷🇴</div>
+                        <div class="cuisine-name">Romanian</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Grilled chicken</div>
+                            <div class="cuisine-safe">✓ Vegetables</div>
+                            <div class="cuisine-danger">✗ Traditional</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="cuisine-icon">🇷🇴</div>
+                        <div class="cuisine-name">Românesc</div>
+                        <div class="cuisine-items">
+                            <div class="cuisine-safe">✓ Pui la grătar</div>
+                            <div class="cuisine-safe">✓ Legume</div>
+                            <div class="cuisine-danger">✗ Tradițional</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass-card phrases-section">
+            <div class="card-header" style="color: #fbbf24;">
+                <span class="icon">💬</span>
+                Magic Phrases
+            </div>
+            <div class="phrases-grid">
+                <div class="phrase-item">
+                    <div class="phrase-en"><span class="flag">🇬🇧</span> "No butter or oil, please"</div>
+                    <div class="phrase-ro"><span class="flag">🇷🇴</span> "Fără unt sau ulei, vă rog"</div>
+                </div>
+                <div class="phrase-item">
+                    <div class="phrase-en"><span class="flag">🇬🇧</span> "Is this cooked in butter?"</div>
+                    <div class="phrase-ro"><span class="flag">🇷🇴</span> "Este gătit în unt?"</div>
+                </div>
+                <div class="phrase-item">
+                    <div class="phrase-en"><span class="flag">🇬🇧</span> "Steamed vegetables, no butter"</div>
+                    <div class="phrase-ro"><span class="flag">🇷🇴</span> "Legume la abur, fără unt"</div>
+                </div>
+                <div class="phrase-item">
+                    <div class="phrase-en"><span class="flag">🇬🇧</span> "Sauce on the side, please"</div>
+                    <div class="phrase-ro"><span class="flag">🇷🇴</span> "Sosul separat, vă rog"</div>
+                </div>
+                <div class="phrase-item">
+                    <div class="phrase-en"><span class="flag">🇬🇧</span> "No cheese or sour cream"</div>
+                    <div class="phrase-ro"><span class="flag">🇷🇴</span> "Fără brânză sau smântână"</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass-card footer">
+            <div class="golden-rule">🏆 Golden Rule</div>
+            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+                When in doubt → Grilled chicken + steamed veggies + salad
+            </p>
+            <p style="color: #a0a0a0;">
+                Boring but safe! Your LDL will thank you! 💪
+            </p>
+        </div>
+    </div>
+</body>
+</html>
